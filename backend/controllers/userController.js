@@ -56,6 +56,7 @@ const registerUser = async (req, res, next) => {
 		}
 	} catch (error) {
 		res.status(400);
+		next(Error(error))
 		next(new Error("Something went wrong"));
 	}
 };
@@ -65,11 +66,12 @@ const registerUser = async (req, res, next) => {
 // @access  PUBLIC
 const loginUser = async (req, res, next) => {
 	const { email, password } = req.body;
+	// console.log('email: ', email, 'password: ', password)
 
 	try {
 		// check for user email
 		const user = await User.findOne({ email });
-
+		console.log('user: ', user)
 		if (!user) {
 			res.status(400);
 			next(new Error("There is no such user"));
@@ -77,17 +79,21 @@ const loginUser = async (req, res, next) => {
 
 		// check for correct password
 		const correctPassword = await bcrypt.compare(password, user.password);
+		console.log('correctPassword: ', correctPassword)
 
-		if (correctPassword) {
-			res.json({
+		if (correctPassword === true) {
+			res.status(200).json({
 				_id: user._id,
 				name: user.name,
 				email: user.email,
 				token: generateToken(user._id),
 			});
+		} else {
+			res.status(500).json({message: "Invalid credentials"})
 		}
 	} catch (error) {
 		res.status(400);
+		next(Error(error))
 		next(new Error("Invalid creadentials"));
 	}
 };
