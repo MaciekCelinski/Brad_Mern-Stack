@@ -7,7 +7,7 @@ const Header = () => {
 			<div className="logo">
 				<Link to="/">GoalSetter</Link>
 			</div>
-			<ul>
+			<ul>sasdasdada
                 <li>
                     <Link to='/login'><FaSignInAlt /> Login</Link>
                 </li>
